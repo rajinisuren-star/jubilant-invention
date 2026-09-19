@@ -37,3 +37,21 @@ export function daysUntil(iso: string): number {
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
 }
+
+// Consecutive-day streak ending today (or yesterday, so marking today doesn't
+// zero out a streak before the user has had a chance to check in).
+export function computeStreak(completedDates: string[]): number {
+  const dates = new Set(completedDates)
+  const today = new Date(`${todayISO()}T00:00:00`)
+  let cursor = new Date(today)
+  if (!dates.has(toISODate(cursor))) {
+    cursor.setDate(cursor.getDate() - 1)
+    if (!dates.has(toISODate(cursor))) return 0
+  }
+  let streak = 0
+  while (dates.has(toISODate(cursor))) {
+    streak += 1
+    cursor.setDate(cursor.getDate() - 1)
+  }
+  return streak
+}

@@ -3,6 +3,7 @@ import {
   HeartPulse,
   LayoutDashboard,
   Pill,
+  ListChecks,
   CalendarDays,
   Smile,
   PhoneCall,
@@ -19,6 +20,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { key: 'dashboard', label: 'Home', icon: <LayoutDashboard aria-hidden size={26} /> },
   { key: 'medications', label: 'Medications', icon: <Pill aria-hidden size={26} /> },
+  { key: 'habits', label: 'Habits', icon: <ListChecks aria-hidden size={26} /> },
   { key: 'appointments', label: 'Appointments', icon: <CalendarDays aria-hidden size={26} /> },
   { key: 'wellness', label: 'Wellness', icon: <Smile aria-hidden size={26} /> },
   { key: 'contacts', label: 'Contacts', icon: <PhoneCall aria-hidden size={26} /> },
@@ -33,7 +35,7 @@ interface LayoutProps {
 
 export function Layout({ active, onChange, children }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] pb-28">
+    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] pb-64 sm:pb-28">
       <header className="bg-[var(--color-primary)] text-[var(--color-on-primary)] px-4 py-5 shadow-md">
         <div className="max-w-3xl mx-auto flex items-center gap-3">
           <HeartPulse aria-hidden size={32} />
@@ -47,7 +49,7 @@ export function Layout({ active, onChange, children }: LayoutProps) {
         aria-label="Main navigation"
         className="fixed bottom-0 inset-x-0 bg-[var(--color-surface)] border-t-2 border-[var(--color-border)] shadow-[0_-2px_8px_rgba(0,0,0,0.08)]"
       >
-        <ul className="max-w-3xl mx-auto grid grid-cols-3 sm:grid-cols-6 gap-1 p-2">
+        <ul className="max-w-3xl mx-auto grid grid-cols-3 sm:grid-cols-7 gap-1 p-2">
           {NAV_ITEMS.map((item) => {
             const isActive = item.key === active
             return (

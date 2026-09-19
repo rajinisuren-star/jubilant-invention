@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { Plus, Trash2, CheckCircle2, Circle } from 'lucide-react'
+import { Plus, Trash2, CheckCircle2, Circle, X } from 'lucide-react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import type { Medication } from '../types'
 import { formatTime12h, generateId, todayISO } from '../utils/date'
 import { Button, Card, EmptyState, Field, SectionTitle, TextArea, TextInput, IconButton } from './ui'
 
-const EMPTY_FORM = { name: '', dosage: '', times: '08:00', notes: '' }
+const EMPTY_FORM = { name: '', dosage: '', times: ['08:00'], notes: '' }
 
 export function Medications() {
   const [medications, setMedications] = useLocalStorage<Medication[]>('swa_medications', [])
@@ -13,13 +13,22 @@ export function Medications() {
   const [form, setForm] = useState(EMPTY_FORM)
   const today = todayISO()
 
+  const addTimeField = () => {
+    setForm((f) => ({ ...f, times: [...f.times, '08:00'] }))
+  }
+
+  const updateTimeField = (index: number, value: string) => {
+    setForm((f) => ({ ...f, times: f.times.map((t, i) => (i === index ? value : t)) }))
+  }
+
+  const removeTimeField = (index: number) => {
+    setForm((f) => ({ ...f, times: f.times.filter((_, i) => i !== index) }))
+  }
+
   const addMedication = (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.name.trim()) return
-    const times = form.times
-      .split(',')
-      .map((t) => t.trim())
-      .filter(Boolean)
+    const times = form.times.filter(Boolean)
     const newMed: Medication = {
       id: generateId(),
       name: form.name.trim(),
@@ -83,15 +92,40 @@ export function Medications() {
                 placeholder="e.g. 10mg, 1 tablet"
               />
             </Field>
-            <Field label="Reminder times (comma separated, e.g. 08:00, 20:00)" htmlFor="med-times">
-              <TextInput
-                id="med-times"
-                type="text"
-                value={form.times}
-                onChange={(e) => setForm((f) => ({ ...f, times: e.target.value }))}
-                placeholder="08:00, 20:00"
-              />
-            </Field>
+            <div className="flex flex-col gap-2">
+              <span className="font-semibold text-sm text-[var(--color-text-muted)]">
+                Reminder times
+              </span>
+              {form.times.map((time, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <TextInput
+                    type="time"
+                    aria-label={`Reminder time ${index + 1}`}
+                    value={time}
+                    onChange={(e) => updateTimeField(index, e.target.value)}
+                    className="flex-1"
+                  />
+                  {form.times.length > 1 && (
+                    <IconButton
+                      type="button"
+                      aria-label={`Remove reminder time ${index + 1}`}
+                      onClick={() => removeTimeField(index)}
+                    >
+                      <X aria-hidden size={20} />
+                    </IconButton>
+                  )}
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={addTimeField}
+                className="self-start flex items-center gap-2"
+              >
+                <Plus aria-hidden size={18} />
+                Add Another Time
+              </Button>
+            </div>
             <Field label="Notes (optional)" htmlFor="med-notes">
               <TextArea
                 id="med-notes"

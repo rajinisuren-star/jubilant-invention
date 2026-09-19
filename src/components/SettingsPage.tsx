@@ -10,7 +10,14 @@ export function SettingsPage() {
   const { settings, setFontScale, toggleHighContrast } = useSettings()
 
   const exportData = () => {
-    const keys = ['swa_medications', 'swa_appointments', 'swa_contacts', 'swa_wellness', 'swa_settings']
+    const keys = [
+      'swa_medications',
+      'swa_habits',
+      'swa_appointments',
+      'swa_contacts',
+      'swa_wellness',
+      'swa_settings',
+    ]
     const data: Record<string, unknown> = {}
     for (const key of keys) {
       const raw = window.localStorage.getItem(key)
@@ -27,10 +34,16 @@ export function SettingsPage() {
 
   const resetData = () => {
     const confirmed = window.confirm(
-      'This will permanently delete all your medications, appointments, contacts, and wellness history from this device. Continue?',
+      'This will permanently delete all your medications, habits, appointments, contacts, and wellness history from this device. Continue?',
     )
     if (!confirmed) return
-    const keys = ['swa_medications', 'swa_appointments', 'swa_contacts', 'swa_wellness']
+    const keys = [
+      'swa_medications',
+      'swa_habits',
+      'swa_appointments',
+      'swa_contacts',
+      'swa_wellness',
+    ]
     for (const key of keys) window.localStorage.removeItem(key)
     window.location.reload()
   }

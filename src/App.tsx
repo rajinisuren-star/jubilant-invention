@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Layout } from './components/Layout'
 import { Dashboard } from './components/Dashboard'
 import { Medications } from './components/Medications'
+import { Habits } from './components/Habits'
 import { Appointments } from './components/Appointments'
 import { WellnessCheckIn } from './components/WellnessCheckIn'
 import { EmergencyContacts } from './components/EmergencyContacts'
@@ -17,6 +18,7 @@ function App() {
       <Layout active={activeTab} onChange={setActiveTab}>
         {activeTab === 'dashboard' && <Dashboard onNavigate={setActiveTab} />}
         {activeTab === 'medications' && <Medications />}
+        {activeTab === 'habits' && <Habits />}
         {activeTab === 'appointments' && <Appointments />}
         {activeTab === 'wellness' && <WellnessCheckIn />}
         {activeTab === 'contacts' && <EmergencyContacts />}

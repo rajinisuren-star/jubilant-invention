@@ -1,6 +1,13 @@
-import { CalendarDays, PhoneCall, Pill, Smile } from 'lucide-react'
+import { CalendarDays, ListChecks, PhoneCall, Pill, Smile } from 'lucide-react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import type { Appointment, EmergencyContact, Medication, TabKey, WellnessEntry } from '../types'
+import type {
+  Appointment,
+  EmergencyContact,
+  Habit,
+  Medication,
+  TabKey,
+  WellnessEntry,
+} from '../types'
 import { formatTime12h, todayISO } from '../utils/date'
 import { nextAppointmentSummary } from './Appointments'
 import { Button, Card, SectionTitle } from './ui'
@@ -10,6 +17,7 @@ export function Dashboard({ onNavigate }: { onNavigate: (tab: TabKey) => void })
   const [appointments] = useLocalStorage<Appointment[]>('swa_appointments', [])
   const [contacts] = useLocalStorage<EmergencyContact[]>('swa_contacts', [])
   const [wellness] = useLocalStorage<WellnessEntry[]>('swa_wellness', [])
+  const [habits] = useLocalStorage<Habit[]>('swa_habits', [])
 
   const today = todayISO()
   const todayWellness = wellness.find((w) => w.date === today)
@@ -23,6 +31,7 @@ export function Dashboard({ onNavigate }: { onNavigate: (tab: TabKey) => void })
 
   const nextAppt = nextAppointmentSummary(appointments)
   const primaryContact = contacts.find((c) => c.isPrimary) ?? contacts[0]
+  const habitsRemaining = habits.filter((h) => !h.completedDates.includes(today))
 
   return (
     <div className="flex flex-col gap-4">
@@ -51,6 +60,29 @@ export function Dashboard({ onNavigate }: { onNavigate: (tab: TabKey) => void })
         )}
         <Button variant="secondary" onClick={() => onNavigate('medications')} className="mt-2">
           View Medications
+        </Button>
+      </Card>
+
+      <Card>
+        <div className="flex items-center gap-2 mb-2">
+          <ListChecks aria-hidden size={22} />
+          <h3 className="font-bold text-lg">Today's Habits</h3>
+        </div>
+        {habits.length === 0 ? (
+          <p className="text-[var(--color-text-muted)] mb-2">No habits added yet.</p>
+        ) : habitsRemaining.length === 0 ? (
+          <p className="text-[var(--color-text-muted)] mb-2">
+            All habits done for today. Nicely done!
+          </p>
+        ) : (
+          <ul className="flex flex-col gap-1 mb-2">
+            {habitsRemaining.slice(0, 4).map((habit) => (
+              <li key={habit.id}>{habit.name}</li>
+            ))}
+          </ul>
+        )}
+        <Button variant="secondary" onClick={() => onNavigate('habits')}>
+          View Habits
         </Button>
       </Card>
 

@@ -36,6 +36,13 @@ export interface WellnessEntry {
   notes: string
 }
 
+export interface Habit {
+  id: string
+  name: string
+  notes: string
+  completedDates: string[] // ISO dates when this habit was marked done
+}
+
 export interface AppSettings {
   fontScale: number // 1 = base, up to 1.6
   highContrast: boolean
@@ -44,6 +51,7 @@ export interface AppSettings {
 export type TabKey =
   | 'dashboard'
   | 'medications'
+  | 'habits'
   | 'appointments'
   | 'wellness'
   | 'contacts'
